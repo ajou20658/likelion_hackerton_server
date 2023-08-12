@@ -22,7 +22,7 @@ public class FlaskService {
     @Autowired
     private KeywordsRepository keywordsRepository;
 
-    public static final String URL = "http://localhost:5000/req?uri=";
+    public static final String URL = "http://localhost:5000/req?date=";
     public static final String URI = "/home/ubuntu/git/likelion_hackerton_server/src/main/resources/static/";
 
     public void iter(String mode) {
@@ -42,10 +42,7 @@ public class FlaskService {
         String urll = URL;
         String urii = "";
 
-        if (mode.equals("0")) {
-            urii = date + sid1 + ".txt";
-        }
-
+        urii = date +"&mode="+mode+"&sid1="+ sid1;
         urll += URI;
         urll += urii;
         WebClient webClient = WebClient.create(urll);
