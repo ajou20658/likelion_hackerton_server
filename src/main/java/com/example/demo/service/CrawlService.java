@@ -42,12 +42,12 @@ public class CrawlService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String formattedDate = today.format(formatter);
         Map<Integer, String[]> sidRanges = new HashMap<>();
-        //sidRanges.put(100, new String[] {"264","265","268","266","267","269"});//정치
-        //sidRanges.put(101, new String[] {"258","259","260","261","771","260","262","310","263"});//경제
-        //sidRanges.put(102, new String[] {"249","250","251","254","252","59b","255","256","276","257"});//사회
-        //sidRanges.put(103, new String[] {"241","239","240","237","238","376","242","243","244","248","245"});//생활문화
+        sidRanges.put(100, new String[] {"264","265","268","266","267","269"});//정치
+        sidRanges.put(101, new String[] {"258","259","260","261","771","260","262","310","263"});//경제
+        sidRanges.put(102, new String[] {"249","250","251","254","252","59b","255","256","276","257"});//사회
+        sidRanges.put(103, new String[] {"241","239","240","237","238","376","242","243","244","248","245"});//생활문화
         sidRanges.put(105, new String[] {"731","226","227","230","732","283","229","228"});//IT/과학
-        //sidRanges.put(104, new String[] {"231","232","233","234","322"});//세계
+        sidRanges.put(104, new String[] {"231","232","233","234","322"});//세계
 
         for(Map.Entry<Integer,String[]> entry: sidRanges.entrySet()){
             Integer sid1 = entry.getKey();
