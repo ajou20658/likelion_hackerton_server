@@ -93,7 +93,7 @@ public class CrawlService {
     public void saveToTxtFile(String content, String fileName) {
         try {
             // Resolve the file path within the "static" folder
-            Path filePath = Path.of("src/main/resources/static/" + fileName);
+            Path filePath = Path.of("/home/ubuntu/git/likelion_hackerton_server/src/main/resources/static/" + fileName);
 
             // Create the parent directories if they don't exist
             Files.createDirectories(filePath.getParent());

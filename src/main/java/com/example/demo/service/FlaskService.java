@@ -23,7 +23,7 @@ public class FlaskService {
     private KeywordsRepository keywordsRepository;
 
     public static final String URL = "http://localhost:5000/req?uri=";
-    public static final String URI = "C:/Users/kwy/Documents/2023하계/HackerTon/src/main/resources/static/";
+    public static final String URI = "/home/ubuntu/git/likelion_hackerton_server/src/main/resources/static/";
 
     public void iter(String mode) {
         LocalDate today = LocalDate.now().minusDays(1);
