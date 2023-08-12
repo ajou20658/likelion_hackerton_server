@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
@@ -34,7 +35,7 @@ public class CrawlService {
     1. 일정 시간동안 생성된 기사 크롤링 후 .txt 파일로 저장
     2. 뉴스에 태그다는
      */
-
+    @Scheduled(cron = "0 0 0 * * *")
     public Long collectingNews() throws Exception {
         Long res = 0L;
         Map<Integer, StringBuilder> sidDataMap = new HashMap<>();
