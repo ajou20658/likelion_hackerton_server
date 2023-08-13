@@ -23,7 +23,6 @@ public class FlaskService {
     private KeywordsRepository keywordsRepository;
 
     public static final String URL = "http://localhost:5000/req?date=";
-    public static final String URI = "/home/ubuntu/git/likelion_hackerton_server/src/main/resources/static/";
 
     public void iter(String mode) {
         LocalDate today = LocalDate.now().minusDays(1);
@@ -43,7 +42,6 @@ public class FlaskService {
         String urii = "";
 
         urii = date +"&mode="+mode+"&sid1="+ sid1;
-        urll += URI;
         urll += urii;
         WebClient webClient = WebClient.create(urll);
 
