@@ -16,7 +16,7 @@ public class SummaryService {
     @Value("${naver.cloud.secret}")
     private String secret;
     public String request(String doc){
-        String request = "{\"document\":[\"content\":\""+doc+"\"],\"option\":[\"language\":\"ko\",\"model\":\"news\",\"summaryCount\":3]}";
+        String request = "{\"document\":{\"content\":\""+doc+"\"},\"option\":{\"language\":\"ko\",\"model\":\"news\",\"summaryCount\":3}}";
         WebClient webClient=
                 WebClient.builder()
                         .baseUrl(url)
