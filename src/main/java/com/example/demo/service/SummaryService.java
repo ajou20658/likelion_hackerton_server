@@ -36,7 +36,7 @@ public class SummaryService {
                 .bodyToMono(String.class);
 
         String responseString = Response.block();
-
+        System.out.println("responseString = " + responseString);
         return responseString;
     }
 }
