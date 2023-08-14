@@ -77,9 +77,16 @@ public class ServiceController {
         return new ResponseEntity<>(json,HttpStatus.OK);
     }
 
-    @PostMapping("/summary")
+    @GetMapping("/summary")
     @ResponseBody
-    public Mono<String> naver(@RequestBody SummaryDto content){
-        return summaryService.requestAsync(content.getDocument());
+    public Mono<String> naver(@RequestParam String url){
+        try {
+            String content = crawlService.crawlingContent(url);
+            return summaryService.requestAsync(content);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return Mono.empty();
+        }
+
     }
 }

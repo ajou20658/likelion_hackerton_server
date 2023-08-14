@@ -113,41 +113,8 @@ public class CrawlService {
             e.printStackTrace();
         }
     }
-    public void mergeWeeklyFiles(String sid1) {
-        LocalDate currentDate = LocalDate.now().minusDays(1);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        String endDate = currentDate.format(formatter);
 
-        LocalDate startDate = currentDate.minusDays(7); // 7일 전까지의 데이터를 합칩니다.
-        String startDateStr = startDate.format(formatter);
-
-        List<String> fileContents = new ArrayList<>();
-
-        // 파일 읽어서 내용을 리스트에 추가
-        for (LocalDate date = startDate; date.isBefore(currentDate); date = date.plusDays(1)) {
-            String fileName = date.format(formatter) + sid1+".txt";
-            String filePath = "/home/ubuntu/git/likelion_hackerton_server/src/main/resources/static/" + fileName;
-
-            try {
-                String content = Files.readString(Path.of(filePath));
-                fileContents.add(content);
-            } catch (IOException e) {
-                log.error("Error reading file: " + fileName, e);
-            }
-        }
-
-        // 합친 내용을 새 파일로 저장
-        String mergedFileName = startDateStr + "_" + endDate + "_merged.txt";
-        String mergedFilePath = "/home/ubuntu/git/likelion_hackerton_server/src/main/resources/static/" + mergedFileName;
-
-        try (BufferedWriter writer = Files.newBufferedWriter(Path.of(mergedFilePath))) {
-            for (String content : fileContents) {
-                writer.write(content);
-            }
-        } catch (IOException e) {
-            log.error("Error writing merged file: " + mergedFileName, e);
-        }
-
-        log.info("Weekly files merged and saved as: " + mergedFileName);
+    public String crawlingContent(String url) throws Exception{
+        return Jsoup.connect(url).get().select(".newsct_article._article_body").text();
     }
 }
