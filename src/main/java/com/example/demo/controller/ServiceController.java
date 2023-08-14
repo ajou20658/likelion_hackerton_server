@@ -4,6 +4,7 @@ import com.example.demo.entity.Keywords;
 import com.example.demo.repository.KeywordsRepository;
 import com.example.demo.service.CrawlService;
 import com.example.demo.service.FlaskService;
+import com.example.demo.service.SummaryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,8 @@ public class ServiceController {
     private CrawlService crawlService;
     @Autowired
     private FlaskService flaskService;
+    @Autowired
+    private SummaryService summaryService;
     @Autowired
     private KeywordsRepository keywordsRepository;
 
@@ -69,7 +72,12 @@ public class ServiceController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
         return new ResponseEntity<>(json,HttpStatus.OK);
+    }
+
+    @PostMapping("/summary")
+    @ResponseBody
+    public ResponseEntity<String> naver(@RequestBody String docs){
+        return new ResponseEntity<String>(summaryService.request(docs),HttpStatus.OK);
     }
 }

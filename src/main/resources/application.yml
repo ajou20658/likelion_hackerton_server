@@ -6,3 +6,8 @@ spring:
       port: 27017
       database: hackerton
       uri: mongodb://localhost:27017/hackerton
+
+naver:
+  cloud:
+    id: 8emvje69d2
+    secret: FHQvAMq4g1NaYNsteCZH1cNE6Vbz433TR1xGGKhK
