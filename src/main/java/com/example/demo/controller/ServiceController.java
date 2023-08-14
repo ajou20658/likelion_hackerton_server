@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.SummaryDto;
 import com.example.demo.entity.Keywords;
 import com.example.demo.repository.KeywordsRepository;
 import com.example.demo.service.CrawlService;
@@ -78,8 +79,7 @@ public class ServiceController {
 
     @PostMapping("/summary")
     @ResponseBody
-    public Mono<String> naver(@RequestBody String content){
-        System.out.println("content = " + content);
-        return summaryService.requestAsync(content);
+    public Mono<String> naver(@RequestBody SummaryDto content){
+        return summaryService.requestAsync(content.getDocument());
     }
 }

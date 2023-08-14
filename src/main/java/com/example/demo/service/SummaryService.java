@@ -20,7 +20,7 @@ public class SummaryService {
     public Mono<String> requestAsync(String doc) {
         WebClient webClient = WebClient.builder().baseUrl(url).build();
 
-        String request = "{\"document\":{"+doc+"},\"option\":{\"language\":\"ko\",\"model\":\"news\",\"summaryCount\":3}}";
+        String request = "{\"document\":{\"content\":\"" + doc + "\"},\"option\":{\"language\":\"ko\",\"model\":\"news\",\"summaryCount\":3}}";
         System.out.println("request = " + request);
         return webClient.post()
                 .uri(url)
