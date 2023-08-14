@@ -2,8 +2,10 @@ package com.example.demo.service;
 
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -15,28 +17,18 @@ public class SummaryService {
 
     @Value("${naver.cloud.secret}")
     private String secret;
-    public String request(String doc){
-        String request = "{\"document\":{\"content\":\""+doc+"\"},\"option\":{\"language\":\"ko\",\"model\":\"news\",\"summaryCount\":3}}";
-        WebClient webClient=
-                WebClient.builder()
-                        .baseUrl(url)
-                        .build();
-        Mono<String> Response = webClient
-                .post()
-                .headers(
-                        httpHeaders -> {
-                            httpHeaders.add("X-NCP-APIGW-API-KEY-ID",id);
-                            httpHeaders.add("X-NCP-APIGW-API-KEY",secret);
-                            httpHeaders.add("Content-Type","application/json");
-                        }
-                )
-                .bodyValue(request)
-                .accept(MediaType.APPLICATION_JSON)
+    public Mono<String> requestAsync(String doc) {
+        WebClient webClient = WebClient.builder().baseUrl(url).build();
+
+        String request = "{\"document\":{\"content\":\"" + doc + "\"},\"option\":{\"language\":\"ko\",\"model\":\"news\",\"summaryCount\":3}}";
+
+        return webClient.post()
+                .uri(url)
+                .header("X-NCP-APIGW-API-KEY-ID", id)
+                .header("X-NCP-APIGW-API-KEY", secret)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(BodyInserters.fromValue(request))
                 .retrieve()
                 .bodyToMono(String.class);
-
-        String responseString = Response.block();
-        System.out.println("responseString = " + responseString);
-        return responseString;
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -77,8 +78,8 @@ public class ServiceController {
 
     @PostMapping("/summary")
     @ResponseBody
-    public ResponseEntity<String> naver(@RequestBody String docs){
+    public Mono<String> naver(@RequestBody String docs){
         System.out.println("docs = " + docs);
-        return new ResponseEntity<>(summaryService.request(docs),HttpStatus.OK);
+        return summaryService.requestAsync(docs);
     }
 }
