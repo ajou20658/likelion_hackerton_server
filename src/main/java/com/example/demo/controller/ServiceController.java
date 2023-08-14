@@ -78,8 +78,8 @@ public class ServiceController {
 
     @PostMapping("/summary")
     @ResponseBody
-    public Mono<String> naver(@RequestBody String docs){
-        System.out.println("docs = " + docs);
-        return summaryService.requestAsync(docs);
+    public Mono<String> naver(@RequestBody String content){
+        System.out.println("content = " + content);
+        return summaryService.requestAsync(content);
     }
 }
