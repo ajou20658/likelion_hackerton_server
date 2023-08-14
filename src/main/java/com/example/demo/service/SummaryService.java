@@ -35,7 +35,8 @@ public class SummaryService {
                 .retrieve()
                 .bodyToMono(String.class);
 
-        System.out.println(Response);
-        return null;
+        String responseString = Response.block();
+
+        return responseString;
     }
 }

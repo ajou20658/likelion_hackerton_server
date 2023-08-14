@@ -79,6 +79,6 @@ public class ServiceController {
     @ResponseBody
     public ResponseEntity<String> naver(@RequestBody String docs){
         System.out.println("docs = " + docs);
-        return new ResponseEntity<String>(summaryService.request(docs),HttpStatus.OK);
+        return new ResponseEntity<>(summaryService.request(docs),HttpStatus.OK);
     }
 }
