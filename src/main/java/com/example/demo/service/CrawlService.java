@@ -115,6 +115,9 @@ public class CrawlService {
     }
 
     public String crawlingContent(String url) throws Exception{
-        return Jsoup.connect(url).get().select(".newsct_article._article_body").text();
+
+        String content =  Jsoup.connect(url).get().select(".newsct_article._article_body").text();
+        content = content.replace("\""," ");
+        return content;
     }
 }
