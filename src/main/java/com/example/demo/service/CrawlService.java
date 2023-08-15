@@ -127,9 +127,9 @@ public class CrawlService {
         Elements elements = Jsoup.connect(url).get().select("#main_pack > section > div > div.group_news > ul > li");
 
         for(Element e:elements){
-            System.out.println("elements"+ e.text());
+//            System.out.println("elements"+ e.text());
             Elements li = e.select("div.news_wrap.api_ani_send > div > div.news_info > div.info_group");
-            if(li.text().contains("네이버 뉴스")){
+            if(li.text().contains("네이버뉴스")){
                 Element secondA = li.get(1).selectFirst("a");
                 String txt = secondA.text();
                 System.out.println("Element : "+txt);
