@@ -131,7 +131,7 @@ public class CrawlService {
             Elements li = e.select("div.news_wrap.api_ani_send > div > div.news_info > div.info_group");
             if(li.text().contains("네이버뉴스")){
 
-                Element secondA = li.select("a").get(1);
+                Element secondA = li.select("a").last();
                 String txt = secondA.text();
                 System.out.println("Element : "+txt);
             }
