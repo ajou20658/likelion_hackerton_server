@@ -125,9 +125,9 @@ public class CrawlService {
     public void keyWordCrawling(String keyword) throws Exception{
         String url= "https://search.naver.com/search.naver?where=news&query="+keyword+"&sm=tab_opt&sort=0&photo=0&field=0&pd=0&ds=&de=&docid=&related=0&mynews=0&office_type=0&office_section_code=0&news_office_checked=&nso=so%3Ar%2Cp%3Aall&is_sug_officeid=0";
         Elements elements = Jsoup.connect(url).get().select("#main_pack > section > div > div.group_news > ul");
-        for(Element e:elements.select("#sp_nws1 > div.news_wrap.api_ani_send > div > div.news_info > div.info_group")){
-
-            System.out.println("Element : "+e.text());
+        for(Element e:elements.select("#sp_nws1")){
+            String txt = e.select("div.news_wrap.api_ani_send > div > div.news_info > div.info_group").text();
+            System.out.println("Element : "+txt);
 
         }
     }
