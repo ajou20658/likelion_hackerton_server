@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.ArticleDto;
+import com.example.demo.dto.CrawlDto;
 import com.example.demo.entity.News;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -12,6 +14,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -31,6 +34,9 @@ import java.util.Map;
 public class CrawlService {
     @Autowired
     private ResourceLoader resourceLoader;
+    @Autowired
+    private SummaryService summaryService;
+    private final static int maxlength = 2000;
     /*
     필요한 기능
     1. 일정 시간동안 생성된 기사 크롤링 후 .txt 파일로 저장
@@ -114,28 +120,59 @@ public class CrawlService {
         }
     }
 
-    public String crawlingContent(String url) throws Exception{
-        String content =  Jsoup.connect(url).get().select(".newsct_article._article_body").text();
+    public CrawlDto crawlingContent(String url) throws Exception{
+        Document doc = Jsoup.connect(url).get();
+        String content =  doc.select(".newsct_article._article_body").text();
+        String img = doc.select("#newsEndContents > span.end_photo_org").select("img").attr("src");
+        String title = doc.select("#content > div > div.content > div > div.news_headline > h4").text();
         content = content.replace("\""," ");
         content = content.replace("\n"," ");
         content = content.replace("\\"," ");
-        return content;
+        if (content.length()>maxlength){
+            content = content.substring(0,maxlength);
+            return CrawlDto.builder()
+                    .img(img)
+                    .title(title)
+                    .content(content)
+                    .build();
+        }
+        return CrawlDto.builder()
+                .img(img)
+                .title(title)
+                .content(content)
+                .build();
     }
 
-    public void keyWordCrawling(String keyword) throws Exception{
+    public List<ArticleDto> keyWordCrawling(String keyword) throws Exception{
         String url= "https://search.naver.com/search.naver?where=news&query="+keyword+"&sm=tab_opt&sort=0&photo=0&field=0&pd=0&ds=&de=&docid=&related=0&mynews=0&office_type=0&office_section_code=0&news_office_checked=&nso=so%3Ar%2Cp%3Aall&is_sug_officeid=0";
         Elements elements = Jsoup.connect(url).get().select("#main_pack > section > div > div.group_news > ul > li");
-
+        List<ArticleDto> lists = new ArrayList<>();
         for(Element e:elements){
 //            System.out.println("elements"+ e.text());
             Elements li = e.select("div.news_wrap.api_ani_send > div > div.news_info > div.info_group");
             if(li.text().contains("네이버뉴스")){
 
                 Element secondA = li.select("a").last();
-                String txt = secondA.text();
-                System.out.println("Element : "+txt);
+                String press = li.select("a").first().text();
+                String origin = secondA.attr("href");
+                try {
+                    CrawlDto crawlDto = crawlingContent(origin);
+                    Mono<String> res =  summaryService.requestAsync(crawlDto.getContent());
+                    String summary = res.block();
+                    lists.add(ArticleDto.builder()
+                            .summary(summary)
+                            .press(press)
+                            .title(crawlDto.getTitle())
+                            .origin(origin)
+                            .img(crawlDto.getImg())
+                            .build());
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                    return null;
+                }
             }
 
         }
+        return lists;
     }
 }

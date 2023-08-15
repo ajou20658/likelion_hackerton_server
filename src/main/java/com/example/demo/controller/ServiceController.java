@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.SummaryDto;
+import com.example.demo.dto.ArticleDto;
 import com.example.demo.entity.Keywords;
 import com.example.demo.repository.KeywordsRepository;
 import com.example.demo.service.CrawlService;
@@ -18,6 +18,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -77,26 +78,26 @@ public class ServiceController {
         return new ResponseEntity<>(json,HttpStatus.OK);
     }
 
-    @GetMapping("/summary")
-    @ResponseBody
-    public Mono<String> naver(@RequestParam String url){
-        try {
-            String content = crawlService.crawlingContent(url);
-            Mono<String> res =  summaryService.requestAsync(content);
-            return res;
-        }catch (Exception ex){
-            ex.printStackTrace();
-            return Mono.empty();
-        }
-    }
+//    @GetMapping("/summary")
+//    @ResponseBody
+//    public Mono<String> naver(@RequestParam String url){
+//        try {
+//            String content = crawlService.crawlingContent(url);
+//            Mono<String> res =  summaryService.requestAsync(content);
+//            return res;
+//        }catch (Exception ex){
+//            ex.printStackTrace();
+//            return Mono.empty();
+//        }
+//    }
     @GetMapping("/search")
     @ResponseBody
-    public void search(@RequestParam String keyword,String num){
+    public List<ArticleDto> search(@RequestParam String keyword, String num){
         try{
-            crawlService.keyWordCrawling(keyword);
+            return crawlService.keyWordCrawling(keyword);
         }catch(Exception ex){
             ex.printStackTrace();
-            return;
+            return null;
         }
     }
 }
