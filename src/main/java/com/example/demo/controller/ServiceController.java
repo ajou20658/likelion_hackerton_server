@@ -82,7 +82,9 @@ public class ServiceController {
     public Mono<String> naver(@RequestParam String url){
         try {
             String content = crawlService.crawlingContent(url);
-            return summaryService.requestAsync(content);
+            Mono<String> res =  summaryService.requestAsync(content);
+            System.out.println("res = " + res);
+            return res;
         }catch (Exception ex){
             ex.printStackTrace();
             return Mono.empty();

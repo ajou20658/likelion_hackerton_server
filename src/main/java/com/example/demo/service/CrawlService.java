@@ -127,6 +127,7 @@ public class CrawlService {
         Elements elements = Jsoup.connect(url).get().select("#main_pack > section > div > div.group_news > ul");
         for(Element e:elements.select("li")){
             System.out.println("Element : "+e);
+
         }
     }
 }
