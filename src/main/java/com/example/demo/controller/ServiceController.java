@@ -87,6 +87,15 @@ public class ServiceController {
             ex.printStackTrace();
             return Mono.empty();
         }
-
+    }
+    @GetMapping("/search")
+    @ResponseBody
+    public void search(@RequestParam String keyword,String num){
+        try{
+            crawlService.keyWordCrawling(keyword);
+        }catch(Exception ex){
+            ex.printStackTrace();
+            return;
+        }
     }
 }

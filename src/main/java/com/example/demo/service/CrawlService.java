@@ -115,9 +115,18 @@ public class CrawlService {
     }
 
     public String crawlingContent(String url) throws Exception{
-
         String content =  Jsoup.connect(url).get().select(".newsct_article._article_body").text();
         content = content.replace("\""," ");
+        content = content.replace("\n"," ");
+        content = content.replace("\\"," ");
         return content;
+    }
+
+    public void keyWordCrawling(String keyword) throws Exception{
+        String url= "https://search.naver.com/search.naver?where=news&query="+keyword+"&sm=tab_opt&sort=0&photo=0&field=0&pd=0&ds=&de=&docid=&related=0&mynews=0&office_type=0&office_section_code=0&news_office_checked=&nso=so%3Ar%2Cp%3Aall&is_sug_officeid=0";
+        Elements elements = Jsoup.connect(url).get().select("#main_pack > section > div > div.group_news > ul");
+        for(Element e:elements.select("li")){
+            System.out.println("Element : "+e);
+        }
     }
 }
