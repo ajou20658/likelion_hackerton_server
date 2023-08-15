@@ -79,15 +79,15 @@ public class ServiceController {
 
     @GetMapping("/summary")
     @ResponseBody
-    public Mono<String> naver(@RequestParam String url){
+    public String naver(@RequestParam String url){
         try {
             String content = crawlService.crawlingContent(url);
             Mono<String> res =  summaryService.requestAsync(content);
             System.out.println("res = " + res);
-            return res;
+            return res.block();
         }catch (Exception ex){
             ex.printStackTrace();
-            return Mono.empty();
+            return "empty";
         }
     }
     @GetMapping("/search")
