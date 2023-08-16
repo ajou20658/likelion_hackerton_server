@@ -122,9 +122,26 @@ public class CrawlService {
 
     public CrawlDto crawlingContent(String url) throws Exception{
         Document doc = Jsoup.connect(url).get();
-        String content =  doc.select(".newsct_article._article_body").text();
-        String img = doc.select("#newsEndContents > span.end_photo_org").select("img").attr("src");
-        String title = doc.select("#content > div > div.content > div > div.news_headline > h4").text();
+        String content;
+        String img;
+        String title;
+        if(url.contains("n.news.naver.com")) {
+            content = doc.select(".newsct_article._article_body").text();
+            System.out.println(doc.select("img._LAZY_LOADING").attr("src"));
+            img="";
+            //*[@id="img1"]
+            title = doc.select("#title_area").text();
+        } else if (url.contains("sports.news.naver.com")) {
+            content = doc.select("#newsEndContents").text();
+            img = doc.select("#newsEndContents > span.end_photo_org").select("img").attr("src");
+            title = doc.select("#content > div > div.content > div > div.news_headline > h4").text();
+
+        } else{
+            content = doc.select("#articeBody").text();
+            img = doc.select("#img1").attr("src");
+            title = doc.select("#content > div.end_ct > div > h2").text();
+        }
+
         content = content.replace("\""," ");
         content = content.replace("\n"," ");
         content = content.replace("\\"," ");
@@ -151,14 +168,19 @@ public class CrawlService {
 //            System.out.println("elements"+ e.text());
             Elements li = e.select("div.news_wrap.api_ani_send > div > div.news_info > div.info_group");
             if(li.text().contains("네이버뉴스")){
-
                 Element secondA = li.select("a").last();
                 String press = li.select("a").first().text();
+                if(press.contains("언론사 선정")){
+                    press = press.replace("언론사 선정","");
+                }
                 String origin = secondA.attr("href");
                 try {
                     CrawlDto crawlDto = crawlingContent(origin);
                     Mono<String> res =  summaryService.requestAsync(crawlDto.getContent());
                     String summary = res.block();
+                    if(crawlDto.getImg().isEmpty()){
+                        System.out.println("img : "+e.select("#div > a > img").attr("src"));
+                    }
                     lists.add(ArticleDto.builder()
                             .summary(summary)
                             .press(press)
@@ -166,6 +188,7 @@ public class CrawlService {
                             .origin(origin)
                             .img(crawlDto.getImg())
                             .build());
+//                    System.out.println("lists : " + lists);
                 }catch (Exception ex){
                     ex.printStackTrace();
                     return null;
