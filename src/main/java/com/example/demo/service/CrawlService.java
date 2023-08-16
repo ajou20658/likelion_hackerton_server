@@ -123,22 +123,22 @@ public class CrawlService {
     public CrawlDto crawlingContent(String url) throws Exception{
         Document doc = Jsoup.connect(url).get();
         String content;
-        String img;
+//        String img;
         String title;
         if(url.contains("n.news.naver.com")) {
             content = doc.select(".newsct_article._article_body").text();
-            System.out.println(doc.select("img._LAZY_LOADING").attr("src"));
-            img="";
+//            System.out.println(doc.select("img._LAZY_LOADING").attr("src"));
+//            img="";
             //*[@id="img1"]
             title = doc.select("#title_area").text();
         } else if (url.contains("sports.news.naver.com")) {
             content = doc.select("#newsEndContents").text();
-            img = doc.select("#newsEndContents > span.end_photo_org").select("img").attr("src");
+//            img = doc.select("#newsEndContents > span.end_photo_org").select("img").attr("src");
             title = doc.select("#content > div > div.content > div > div.news_headline > h4").text();
 
         } else{
             content = doc.select("#articeBody").text();
-            img = doc.select("#img1").attr("src");
+//            img = doc.select("#img1").attr("src");
             title = doc.select("#content > div.end_ct > div > h2").text();
         }
 
@@ -148,13 +148,13 @@ public class CrawlService {
         if (content.length()>maxlength){
             content = content.substring(0,maxlength);
             return CrawlDto.builder()
-                    .img(img)
+//                    .img(img)
                     .title(title)
                     .content(content)
                     .build();
         }
         return CrawlDto.builder()
-                .img(img)
+//                .img(img)
                 .title(title)
                 .content(content)
                 .build();
@@ -170,6 +170,7 @@ public class CrawlService {
             if(li.text().contains("네이버뉴스")){
                 Element secondA = li.select("a").last();
                 String press = li.select("a").first().text();
+                String img = e.select("div.news_wrap.api_ani_send > a > img").attr("src");
                 if(press.contains("언론사 선정")){
                     press = press.replace("언론사 선정","");
                 }
@@ -178,15 +179,12 @@ public class CrawlService {
                     CrawlDto crawlDto = crawlingContent(origin);
                     Mono<String> res =  summaryService.requestAsync(crawlDto.getContent());
                     String summary = res.block();
-                    if(crawlDto.getImg().isEmpty()){
-                        System.out.println("img : "+e.select("#div > a > img").attr("src"));
-                    }
                     lists.add(ArticleDto.builder()
                             .summary(summary)
                             .press(press)
                             .title(crawlDto.getTitle())
                             .origin(origin)
-                            .img(crawlDto.getImg())
+                            .img(img)
                             .build());
 //                    System.out.println("lists : " + lists);
                 }catch (Exception ex){
