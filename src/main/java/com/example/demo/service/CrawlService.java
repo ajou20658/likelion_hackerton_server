@@ -123,22 +123,16 @@ public class CrawlService {
     public CrawlDto crawlingContent(String url) throws Exception{
         Document doc = Jsoup.connect(url).get();
         String content;
-//        String img;
         String title;
         if(url.contains("n.news.naver.com")) {
             content = doc.select(".newsct_article._article_body").text();
-//            System.out.println(doc.select("img._LAZY_LOADING").attr("src"));
-//            img="";
-            //*[@id="img1"]
             title = doc.select("#title_area").text();
         } else if (url.contains("sports.news.naver.com")) {
             content = doc.select("#newsEndContents").text();
-//            img = doc.select("#newsEndContents > span.end_photo_org").select("img").attr("src");
             title = doc.select("#content > div > div.content > div > div.news_headline > h4").text();
 
         } else{
             content = doc.select("#articeBody").text();
-//            img = doc.select("#img1").attr("src");
             title = doc.select("#content > div.end_ct > div > h2").text();
         }
 
@@ -148,13 +142,11 @@ public class CrawlService {
         if (content.length()>maxlength){
             content = content.substring(0,maxlength);
             return CrawlDto.builder()
-//                    .img(img)
                     .title(title)
                     .content(content)
                     .build();
         }
         return CrawlDto.builder()
-//                .img(img)
                 .title(title)
                 .content(content)
                 .build();
@@ -162,8 +154,6 @@ public class CrawlService {
     public String crawling(String url) throws Exception{
         Document doc = Jsoup.connect(url).get();
         String content;
-//        String img;
-        String title;
         if(url.contains("n.news.naver.com")) {
             content = doc.select(".newsct_article._article_body").text();
         } else if (url.contains("sports.news.naver.com")) {

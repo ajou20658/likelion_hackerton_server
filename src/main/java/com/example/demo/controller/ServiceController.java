@@ -86,7 +86,7 @@ public class ServiceController {
     public Mono<JsonNode> naver(@RequestParam String url){
         try {
             String content = crawlService.crawling(url);
-            log.info(content);
+//            log.info(content);
             return summaryService.requestAsync(content);
         }catch (Exception ex){
             ex.printStackTrace();
