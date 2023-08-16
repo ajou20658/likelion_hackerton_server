@@ -162,8 +162,6 @@ public class CrawlService {
         }
 
         content = content.replace("\""," ");
-        content = content.replace("\n"," ");
-        content = content.replace("\\"," ");
         if (content.length()>maxlength){
             content = content.substring(0,maxlength);
             return content;

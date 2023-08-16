@@ -92,7 +92,7 @@ public class ServiceController {
     }
     @GetMapping("/search")
     @ResponseBody
-    public ResponseEntity<Object> search(@RequestParam String keyword, String num){
+    public ResponseEntity<Object> search(@RequestParam String keyword){
         try{
             List<ArticleDto> result = crawlService.keyWordCrawling(keyword);
             Map<String,Object> response = new HashMap<>();
