@@ -78,18 +78,18 @@ public class ServiceController {
         return new ResponseEntity<>(json,HttpStatus.OK);
     }
 
-//    @GetMapping("/summary")
-//    @ResponseBody
-//    public Mono<String> naver(@RequestParam String url){
-//        try {
-//            String content = crawlService.crawlingContent(url);
-//            Mono<String> res =  summaryService.requestAsync(content);
-//            return res;
-//        }catch (Exception ex){
-//            ex.printStackTrace();
-//            return Mono.empty();
-//        }
-//    }
+    @GetMapping("/summary")
+    @ResponseBody
+    public Mono<String> naver(@RequestParam String url){
+        try {
+            String content = crawlService.crawling(url);
+            Mono<String> res =  summaryService.requestAsync(content);
+            return res;
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return Mono.empty();
+        }
+    }
     @GetMapping("/search")
     @ResponseBody
     public List<ArticleDto> search(@RequestParam String keyword, String num){

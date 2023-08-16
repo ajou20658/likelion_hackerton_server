@@ -159,7 +159,28 @@ public class CrawlService {
                 .content(content)
                 .build();
     }
+    public String crawling(String url) throws Exception{
+        Document doc = Jsoup.connect(url).get();
+        String content;
+//        String img;
+        String title;
+        if(url.contains("n.news.naver.com")) {
+            content = doc.select(".newsct_article._article_body").text();
+        } else if (url.contains("sports.news.naver.com")) {
+            content = doc.select("#newsEndContents").text();
+        } else{
+            content = doc.select("#articeBody").text();
+        }
 
+        content = content.replace("\""," ");
+        content = content.replace("\n"," ");
+        content = content.replace("\\"," ");
+        if (content.length()>maxlength){
+            content = content.substring(0,maxlength);
+            return content;
+        }
+        return content;
+    }
     public List<ArticleDto> keyWordCrawling(String keyword) throws Exception{
         String url= "https://search.naver.com/search.naver?where=news&query="+keyword+"&sm=tab_opt&sort=0&photo=0&field=0&pd=0&ds=&de=&docid=&related=0&mynews=0&office_type=0&office_section_code=0&news_office_checked=&nso=so%3Ar%2Cp%3Aall&is_sug_officeid=0";
         Elements elements = Jsoup.connect(url).get().select("#main_pack > section > div > div.group_news > ul > li");
