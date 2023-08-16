@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,6 +19,7 @@ public class SummaryService {
 
     @Value("${naver.cloud.secret}")
     private String secret;
+    @Async
     public Mono<JsonNode> requestAsync(String doc) {
         WebClient webClient = WebClient.builder().baseUrl(url).build();
 

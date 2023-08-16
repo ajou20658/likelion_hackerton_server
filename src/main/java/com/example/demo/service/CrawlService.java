@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -24,10 +25,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -119,7 +118,7 @@ public class CrawlService {
             e.printStackTrace();
         }
     }
-
+    @Async
     public CrawlDto crawlingContent(String url) throws Exception{
         Document doc = Jsoup.connect(url).get();
         String content;
@@ -171,41 +170,42 @@ public class CrawlService {
         }
         return content;
     }
-    public List<ArticleDto> keyWordCrawling(String keyword) throws Exception{
-        String url= "https://search.naver.com/search.naver?where=news&query="+keyword+"&sm=tab_opt&sort=0&photo=0&field=0&pd=0&ds=&de=&docid=&related=0&mynews=0&office_type=0&office_section_code=0&news_office_checked=&nso=so%3Ar%2Cp%3Aall&is_sug_officeid=0";
+    public List<ArticleDto> keyWordCrawling(String keyword) throws Exception {
+        String url = "https://search.naver.com/search.naver?where=news&query=" + keyword + "&sm=tab_opt&sort=0&photo=0&field=0&pd=0&ds=&de=&docid=&related=0&mynews=0&office_type=0&office_section_code=0&news_office_checked=&nso=so%3Ar%2Cp%3Aall&is_sug_officeid=0";
         Elements elements = Jsoup.connect(url).get().select("#main_pack > section > div > div.group_news > ul > li");
-        List<ArticleDto> lists = new ArrayList<>();
-        for(Element e:elements){
-//            System.out.println("elements"+ e.text());
+
+        List<ArticleDto> lists = elements.parallelStream().map(e -> {
             Elements li = e.select("div.news_wrap.api_ani_send > div > div.news_info > div.info_group");
-            if(li.text().contains("네이버뉴스")){
+            if (li.text().contains("네이버뉴스")) {
                 Element secondA = li.select("a").last();
                 String press = li.select("a").first().text();
                 String img = e.select("div.news_wrap.api_ani_send > a > img").attr("data-lazysrc");
 
-                if(press.contains("언론사 선정")){
-                    press = press.replace("언론사 선정","");
+                if (press.contains("언론사 선정")) {
+                    press = press.replace("언론사 선정", "");
                 }
                 String origin = secondA.attr("href");
                 try {
                     CrawlDto crawlDto = crawlingContent(origin);
-                    Mono<String> res =  summaryService.requestAsync(crawlDto.getContent()).map(jsonNode -> jsonNode.get("summary").asText());
+                    Mono<String> res = summaryService.requestAsync(crawlDto.getContent()).map(jsonNode -> jsonNode.get("summary").asText());
                     String summary = res.block();
-                    lists.add(ArticleDto.builder()
+                    return ArticleDto.builder()
                             .summary(summary)
                             .press(press)
                             .title(crawlDto.getTitle())
                             .origin(origin)
                             .img(img)
-                            .build());
-//                    System.out.println("lists : " + lists);
-                }catch (Exception ex){
+                            .build();
+                } catch (Exception ex) {
                     ex.printStackTrace();
                     return null;
                 }
+            } else {
+                return null;
             }
+        }).filter(Objects::nonNull).collect(Collectors.toList());
 
-        }
         return lists;
     }
+
 }
