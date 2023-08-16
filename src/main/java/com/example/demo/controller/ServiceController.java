@@ -19,10 +19,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -95,9 +92,12 @@ public class ServiceController {
     }
     @GetMapping("/search")
     @ResponseBody
-    public List<ArticleDto> search(@RequestParam String keyword, String num){
+    public ResponseEntity<Object> search(@RequestParam String keyword, String num){
         try{
-            return crawlService.keyWordCrawling(keyword);
+            List<ArticleDto> result = crawlService.keyWordCrawling(keyword);
+            Map<String,Object> response = new HashMap<>();
+            response.put("response",result);
+            return new ResponseEntity<>(response,HttpStatus.OK);
         }catch(Exception ex){
             ex.printStackTrace();
             return null;
