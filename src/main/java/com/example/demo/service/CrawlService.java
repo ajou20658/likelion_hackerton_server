@@ -199,7 +199,7 @@ public class CrawlService {
                 String origin = secondA.attr("href");
                 try {
                     CrawlDto crawlDto = crawlingContent(origin);
-                    Mono<String> res =  summaryService.requestAsync(crawlDto.getContent());
+                    Mono<String> res =  summaryService.requestAsync(crawlDto.getContent()).map(jsonNode -> jsonNode.get("summary").asText());
                     String summary = res.block();
                     lists.add(ArticleDto.builder()
                             .summary(summary)

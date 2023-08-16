@@ -7,6 +7,7 @@ import com.example.demo.service.CrawlService;
 import com.example.demo.service.FlaskService;
 import com.example.demo.service.SummaryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,16 +83,11 @@ public class ServiceController {
 
     @GetMapping("/summary")
     @ResponseBody
-    public Mono<Map<String,String>> naver(@RequestParam String url){
+    public Mono<JsonNode> naver(@RequestParam String url){
         try {
             String content = crawlService.crawling(url);
             log.info(content);
-            return summaryService.requestAsync(content)
-                    .map(summary->{
-                        Map<String,String> responseMap = new HashMap<>();
-                        responseMap.put("summary",summary);
-                                return responseMap;
-                    });
+            return summaryService.requestAsync(content);
         }catch (Exception ex){
             ex.printStackTrace();
             return Mono.empty();

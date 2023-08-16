@@ -18,7 +18,7 @@ public class SummaryService {
 
     @Value("${naver.cloud.secret}")
     private String secret;
-    public Mono<String> requestAsync(String doc) {
+    public Mono<JsonNode> requestAsync(String doc) {
         WebClient webClient = WebClient.builder().baseUrl(url).build();
 
         String request = "{\"document\":{\"content\":\"" + doc + "\"},\"option\":{\"language\":\"ko\",\"model\":\"news\",\"summaryCount\":2}}";
@@ -30,8 +30,8 @@ public class SummaryService {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(BodyInserters.fromValue(request))
                 .retrieve()
-                .bodyToMono(JsonNode.class)
-                .map(jsonNode -> jsonNode.get("summary").asText())
-                ;
+                .bodyToMono(JsonNode.class);
+//                .map(jsonNode -> jsonNode.get("summary").asText())
+
     }
 }
