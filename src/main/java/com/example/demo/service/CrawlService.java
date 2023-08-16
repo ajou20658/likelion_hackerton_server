@@ -170,7 +170,8 @@ public class CrawlService {
             if(li.text().contains("네이버뉴스")){
                 Element secondA = li.select("a").last();
                 String press = li.select("a").first().text();
-                String img = e.select("div.news_wrap.api_ani_send > a > img").attr("src");
+                String img = e.select("div.news_wrap.api_ani_send > a > img").attr("data-lazysrc");
+
                 if(press.contains("언론사 선정")){
                     press = press.replace("언론사 선정","");
                 }
