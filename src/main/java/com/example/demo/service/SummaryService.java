@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -29,6 +30,8 @@ public class SummaryService {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(BodyInserters.fromValue(request))
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(JsonNode.class)
+                .map(jsonNode -> jsonNode.get("summary").asText())
+                ;
     }
 }
