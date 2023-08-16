@@ -18,7 +18,9 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -80,12 +82,16 @@ public class ServiceController {
 
     @GetMapping("/summary")
     @ResponseBody
-    public Mono<String> naver(@RequestParam String url){
+    public Mono<Map<String,String>> naver(@RequestParam String url){
         try {
             String content = crawlService.crawling(url);
             log.info(content);
-            Mono<String> res =  summaryService.requestAsync(content);
-            return res;
+            return summaryService.requestAsync(content)
+                    .map(summary->{
+                        Map<String,String> responseMap = new HashMap<>();
+                        responseMap.put("summary",summary);
+                                return responseMap;
+                    });
         }catch (Exception ex){
             ex.printStackTrace();
             return Mono.empty();
