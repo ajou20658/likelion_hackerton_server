@@ -21,6 +21,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -98,7 +99,8 @@ public class ServiceController {
             }
         }
         System.out.println("keywords = " + keywords);
-        for(Object value: keywords){
+        List<Object> TenKeyword = keywords.stream().limit(10).collect(Collectors.toList());
+        for(Object value: TenKeyword){
             System.out.println("value = " + value);
             try{
                 List<Save> save = crawlService.keyWordCrawling((String)value);
