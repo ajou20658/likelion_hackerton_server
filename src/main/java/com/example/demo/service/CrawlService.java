@@ -193,7 +193,7 @@ public class CrawlService {
                     throw new RuntimeException("Error processing origin: " + origin, ex);
                 }
             } else {
-                return null;
+                continue;
             }
         }
 
