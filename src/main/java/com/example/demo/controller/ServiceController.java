@@ -58,7 +58,7 @@ public class ServiceController {
         flaskService.iter("0");
     }
 
-    @GetMapping("/get-keyword")
+    @GetMapping("/keyword")
     @ResponseBody
     public ResponseEntity<String> flask(@RequestParam String mode, String sid1){
         LocalDate today = LocalDate.now().minusDays(1);
