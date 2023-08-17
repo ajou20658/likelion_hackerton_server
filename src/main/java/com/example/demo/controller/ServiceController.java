@@ -86,7 +86,7 @@ public class ServiceController {
         String formattedDate = today.format(formatter);
         Set<Object> keywords = new HashSet<>();
         //키워드 저장
-        for (int sid1=100;sid1<=101;sid1++){
+        for (int sid1=100;sid1<=100;sid1++){
             try{
                 Optional<Keywords> exists = keywordsRepository.findById(formattedDate+sid1+"0"+".txt");
                 if(exists.isEmpty()){
