@@ -150,6 +150,20 @@ public class ServiceController {
                     try{
                         Thread.sleep(100);
                         String content = crawlService.crawling(a.getOriginUrl());
+                        String[] sentences = content.split("[.!?]");
+                        boolean shouldRemove = false;
+
+                        for (String sentence : sentences) {
+                            if (wordCount(sentence) < 5) {
+                                shouldRemove = true;
+                                break;
+                            }
+                        }
+
+                        if (shouldRemove) {
+                            save2.remove(a);
+                            continue;
+                        }
                         String summary = summaryService.requestAsync(content).block().get("summary").asText();
                         System.out.println("summary = " + summary);
                         a.setSummary(summary);
@@ -162,6 +176,12 @@ public class ServiceController {
                 saveRepository.save(save);
 
         }
+    }
+    private int wordCount(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return 0;
+        }
+        return text.trim().split("\\s+").length;
     }
     @GetMapping("/summary")
     @ResponseBody
