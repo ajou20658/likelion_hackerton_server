@@ -12,4 +12,4 @@ naver:
     id: 8emvje69d2
     secret: FHQvAMq4g1NaYNsteCZH1cNE6Vbz433TR1xGGKhK
 server:
-  port: 8081
+  port: 8080
