@@ -36,7 +36,8 @@ public class SummaryService {
                     System.out.println("400 BAD REQ - doc"+finalDoc);
                     return Mono.empty();
                 })
-                .bodyToMono(JsonNode.class);
+                .bodyToMono(JsonNode.class)
+                ;
 //                .map(jsonNode -> jsonNode.get("summary").asText())
 
     }

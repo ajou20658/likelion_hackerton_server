@@ -146,7 +146,7 @@ public class ServiceController {
                 List<Save> save2 = save.getResponse();
                 for(Save a:save2){
                     String content = crawlService.crawling(a.getOriginUrl());
-                    String summary = String.valueOf(summaryService.requestAsync(content).map(jsonNode -> jsonNode.get("summary").asText()));
+                    String summary = summaryService.requestAsync(content).block().get("summary").asText();
                     System.out.println("summary = " + summary);
                     a.setSummary(summary);
                 }
