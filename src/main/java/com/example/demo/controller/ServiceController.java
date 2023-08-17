@@ -152,18 +152,19 @@ public class ServiceController {
                         String content = crawlService.crawling(a.getOriginUrl());
                         String[] sentences = content.split("[.!?]");
                         boolean shouldRemove = false;
-
+                        log.info("OK");
                         for (String sentence : sentences) {
                             if (wordCount(sentence) < 5) {
                                 shouldRemove = true;
                                 break;
                             }
                         }
-
+                        log.info("OK");
                         if (shouldRemove) {
                             save2.remove(a);
                             continue;
                         }
+                        log.info("OK");
                         String summary = summaryService.requestAsync(content).block().get("summary").asText();
                         System.out.println("summary = " + summary);
                         a.setSummary(summary);
