@@ -162,6 +162,7 @@ public class ServiceController {
                         log.info("OK");
                         if (shouldRemove) {
                             save2.remove(a);
+                            System.out.println("save2 = " + save2);
                             continue;
                         }
                         log.info("OK");
