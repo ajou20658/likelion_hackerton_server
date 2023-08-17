@@ -176,7 +176,7 @@ public class CrawlService {
                 Element secondA = li.select("a").last();
                 String press = li.select("a").first().text();
                 String img = e.select("div.news_wrap.api_ani_send > a > img").attr("data-lazysrc");
-                String desc = e.select("#div.news_wrap.api_ani_send > div > div.news_dsc > div > a").text();
+                String desc = e.select("div.news_wrap.api_ani_send > div > div.news_dsc > div > a").text();
                 if (press.contains("언론사 선정")) {
                     press = press.replace("언론사 선정", "");
                 }
@@ -197,7 +197,8 @@ public class CrawlService {
             } else {
                 return null;
             }
-        }).filter(Objects::nonNull).collect(Collectors.toList());
+        }).filter(save -> save != null && save.getPress().contains("네이버뉴스")).collect(Collectors.toList());
+
 
         return lists;
     }
