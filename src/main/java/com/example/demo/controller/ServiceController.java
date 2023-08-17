@@ -160,7 +160,6 @@ public class ServiceController {
                         System.out.println("summary = " + summary);
                         a.setSummary(summary);
                     }catch (Exception ex){
-                        ex.printStackTrace();
                         save2.remove(a);
                     }
                 }
