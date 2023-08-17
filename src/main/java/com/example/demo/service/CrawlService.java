@@ -165,9 +165,8 @@ public class CrawlService {
     public List<Save> keyWordCrawling(String keyword) throws Exception {
         //String url = "https://search.naver.com/search.naver?where=news&query=" + keyword + "&sm=tab_opt&sort=0&photo=0&field=0&pd=0&ds=&de=&docid=&related=0&mynews=0&office_type=0&office_section_code=0&news_office_checked=&nso=so%3Ar%2Cp%3Aall&is_sug_officeid=0";
         String url = "https://search.naver.com/search.naver?sm=tab_hty.top&where=news&query="+keyword;
-        Elements elements = Jsoup.connect(url)
-                .get().select("#main_pack > section > div > div.group_news > ul > li");
-
+        Document doc = Jsoup.connect(url).get();
+        Elements elements = doc.select("#main_pack > section > div > div.group_news > ul > li");
         List<Save> lists = new ArrayList<>();
         for(Element e : elements){
             Elements li = e.select("div.news_wrap.api_ani_send > div > div.news_info > div.info_group");
