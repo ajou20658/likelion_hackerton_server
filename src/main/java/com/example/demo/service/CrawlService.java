@@ -189,12 +189,12 @@ public class CrawlService {
                             .build();
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    return null;
+                    throw new RuntimeException("Error processing origin: " + origin, ex);
                 }
             } else {
                 return null;
             }
-        }).filter(save -> save != null && save.getPress().contains("네이버뉴스")).collect(Collectors.toList());
+        }).filter(Objects::nonNull).collect(Collectors.toList());
 
 
         return lists;
