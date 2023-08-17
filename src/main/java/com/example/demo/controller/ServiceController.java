@@ -144,17 +144,11 @@ public class ServiceController {
         System.out.println("TenKeyword = " + keywords);
         for(Object value: keywords){
             System.out.println("value = " + value);
-
-
                 MongoSave save = saveRepository.findById((String) value).get();
                 List<Save> save2 = save.getResponse();
-            try{
-                Thread.sleep(1000);
-            }catch (Exception ex){
-                ex.printStackTrace();
-            }
                 for(Save a:save2){
                     try{
+                        Thread.sleep(100);
                         String content = crawlService.crawling(a.getOriginUrl());
                         String summary = summaryService.requestAsync(content).block().get("summary").asText();
                         System.out.println("summary = " + summary);
