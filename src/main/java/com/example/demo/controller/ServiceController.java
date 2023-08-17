@@ -102,7 +102,9 @@ public class ServiceController {
 //        List<Object> TenKeyword = keywords.stream().limit(10).collect(Collectors.toList());
         for(Object value: keywords){
             System.out.println("value = " + value);
+
             try{
+                Thread.sleep(1000);
                 List<Save> save = crawlService.keyWordCrawling((String)value);
                 System.out.println("saved count : " + save.size());
                 saveRepository.save(MongoSave.builder()
