@@ -4,6 +4,7 @@ package com.example.demo.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class SummaryService {
     @Async
     public Mono<JsonNode> requestAsync(String doc) {
         WebClient webClient = WebClient.builder().baseUrl(url).build();
-
+        final String finalDoc = doc;
         String request = "{\"document\":{\"content\":\"" + doc + "\"},\"option\":{\"language\":\"ko\",\"model\":\"news\",\"summaryCount\":2}}";
         return webClient.post()
                 .uri(url)
@@ -31,6 +32,10 @@ public class SummaryService {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(BodyInserters.fromValue(request))
                 .retrieve()
+                .onStatus(HttpStatus.BAD_REQUEST::equals, clientResponse -> {
+                    System.out.println("400 BAD REQ - doc"+finalDoc);
+                    return Mono.empty();
+                })
                 .bodyToMono(JsonNode.class);
 //                .map(jsonNode -> jsonNode.get("summary").asText())
 

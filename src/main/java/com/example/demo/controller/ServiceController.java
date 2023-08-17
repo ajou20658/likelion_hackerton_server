@@ -97,6 +97,7 @@ public class ServiceController {
                 ex.printStackTrace();
             }
         }
+        System.out.println("keywords = " + keywords);
         for(Object value: keywords){
             System.out.println("value = " + value);
             try{
@@ -105,10 +106,10 @@ public class ServiceController {
                                 .response(crawlService.keyWordCrawling((String)value))
                         .build())
                 ;
+                System.out.println("completed");
             }catch (Exception ex){
                 ex.printStackTrace();
             }
-            System.out.println("completed");
         }
         //키워드들 조회, 뉴스 검색후 저장
 
