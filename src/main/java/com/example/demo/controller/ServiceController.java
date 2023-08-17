@@ -140,9 +140,9 @@ public class ServiceController {
         }
 
 
-        List<Object> TenKeyword = keywords.stream().limit(10).collect(Collectors.toList());
-        System.out.println("TenKeyword = " + TenKeyword);
-        for(Object value: TenKeyword){
+//        List<Object> TenKeyword = keywords.stream().limit(10).collect(Collectors.toList());
+        System.out.println("TenKeyword = " + keywords);
+        for(Object value: keywords){
             System.out.println("value = " + value);
 
             try{
