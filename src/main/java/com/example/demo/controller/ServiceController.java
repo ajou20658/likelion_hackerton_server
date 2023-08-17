@@ -145,21 +145,29 @@ public class ServiceController {
         for(Object value: keywords){
             System.out.println("value = " + value);
 
-            try{
+
                 MongoSave save = saveRepository.findById((String) value).get();
                 List<Save> save2 = save.getResponse();
+            try{
                 Thread.sleep(1000);
-                for(Save a:save2){
-                    String content = crawlService.crawling(a.getOriginUrl());
-                    String summary = summaryService.requestAsync(content).block().get("summary").asText();
-                    System.out.println("summary = " + summary);
-                    a.setSummary(summary);
-                }
-                save.setResponse(save2);
-                saveRepository.save(save);
             }catch (Exception ex){
                 ex.printStackTrace();
             }
+                for(Save a:save2){
+                    try{
+                        String content = crawlService.crawling(a.getOriginUrl());
+                        String summary = summaryService.requestAsync(content).block().get("summary").asText();
+                        System.out.println("summary = " + summary);
+                        a.setSummary(summary);
+                    }catch (Exception ex){
+                        ex.printStackTrace();
+                        save2.remove(a);
+                    }
+                }
+
+                save.setResponse(save2);
+                saveRepository.save(save);
+
         }
     }
     @GetMapping("/summary")
