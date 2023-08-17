@@ -108,6 +108,7 @@ public class ServiceController {
             }catch (Exception ex){
                 ex.printStackTrace();
             }
+            System.out.println("completed");
         }
         //키워드들 조회, 뉴스 검색후 저장
 
