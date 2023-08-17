@@ -177,7 +177,9 @@ public class ServiceController {
     @ResponseBody
     public ResponseEntity<Object> search(@RequestParam String keyword){
         try{
-            List<Save> result = saveRepository.findById(keyword).get().getResponse();
+            Optional<MongoSave> repo = saveRepository.findById(keyword);
+            List<Save> result = repo.get().getResponse();
+            System.out.println("result = " + result);
             Map<String,Object> response = new HashMap<>();
             response.put("response",result);
             return new ResponseEntity<>(response,HttpStatus.OK);
