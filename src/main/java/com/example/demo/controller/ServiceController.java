@@ -146,6 +146,7 @@ public class ServiceController {
             System.out.println("value = " + value);
                 MongoSave save = saveRepository.findById((String) value).get();
                 List<Save> save2 = save.getResponse();
+                List<Save> updated = new ArrayList<>();
                 for(Save a:save2){
                     try{
                         Thread.sleep(100);
@@ -161,7 +162,6 @@ public class ServiceController {
                         }
                         log.info("OK");
                         if (shouldRemove) {
-                            save2.remove(a);
                             System.out.println("save2 = " + save2);
                             continue;
                         }
@@ -169,12 +169,13 @@ public class ServiceController {
                         String summary = summaryService.requestAsync(content).block().get("summary").asText();
                         System.out.println("summary = " + summary);
                         a.setSummary(summary);
+                        updated.add(a);
                     }catch (Exception ex){
-                        save2.remove(a);
                         continue;
                     }
                 }
-                save.setResponse(save2);
+
+                save.setResponse(updated);
                 saveRepository.save(save);
 
         }
