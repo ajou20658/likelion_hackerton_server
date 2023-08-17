@@ -101,9 +101,11 @@ public class ServiceController {
         for(Object value: keywords){
             System.out.println("value = " + value);
             try{
+                List<Save> save = crawlService.keyWordCrawling((String)value);
+                System.out.println("save = " + save);
                 saveRepository.save(MongoSave.builder()
                                 .id((String)value)
-                                .response(crawlService.keyWordCrawling((String)value))
+                                .response(save)
                         .build())
                 ;
                 System.out.println("completed");
