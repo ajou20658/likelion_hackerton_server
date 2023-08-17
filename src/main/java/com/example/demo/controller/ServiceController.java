@@ -136,8 +136,9 @@ public class ServiceController {
                 ex.printStackTrace();
             }
         }
-        System.out.println("keywords = " + keywords);
+
         List<Object> TenKeyword = keywords.stream().limit(10).collect(Collectors.toList());
+        System.out.println("TenKeyword = " + TenKeyword);
         for(Object value: TenKeyword){
             System.out.println("value = " + value);
             try{
@@ -146,6 +147,7 @@ public class ServiceController {
                 for(Save a:save2){
                     String content = crawlService.crawling(a.getOriginUrl());
                     String summary = String.valueOf(summaryService.requestAsync(content).map(jsonNode -> jsonNode.get("summary").asText()));
+                    System.out.println("summary = " + summary);
                     a.setSummary(summary);
                 }
                 save.setResponse(save2);
