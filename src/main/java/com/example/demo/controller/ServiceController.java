@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import javax.swing.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -121,31 +122,33 @@ public class ServiceController {
 
     }
     @GetMapping("/save-summary")//{keyword:[{뉴스1},{뉴스2}]}<-각각에 summary추가
-    public void save2(){
+    public void save2(@RequestParam String sid1){
         LocalDate today = LocalDate.now().minusDays(1);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String formattedDate = today.format(formatter);
         Set<Object> keywords = new HashSet<>();
         //키워드 저장
-        for (int sid1=100;sid1<=105;sid1++){
-            try{
-                Optional<Keywords> exists = keywordsRepository.findById(formattedDate+sid1+"0"+".txt");
-                if(exists.isEmpty()){
-                    return;
-                }
-                keywords.addAll(exists.get().getResponse().values());
-            }catch(Exception ex){
-                ex.printStackTrace();
+
+        try{
+            Optional<Keywords> exists = keywordsRepository.findById(formattedDate+sid1+"0"+".txt");
+            if(exists.isEmpty()){
+                return;
             }
+            keywords.addAll(exists.get().getResponse().values());
+        }catch(Exception ex){
+            ex.printStackTrace();
         }
+
 
         List<Object> TenKeyword = keywords.stream().limit(10).collect(Collectors.toList());
         System.out.println("TenKeyword = " + TenKeyword);
         for(Object value: TenKeyword){
             System.out.println("value = " + value);
+
             try{
                 MongoSave save = saveRepository.findById((String) value).get();
                 List<Save> save2 = save.getResponse();
+                Thread.sleep(1000);
                 for(Save a:save2){
                     String content = crawlService.crawling(a.getOriginUrl());
                     String summary = summaryService.requestAsync(content).block().get("summary").asText();
