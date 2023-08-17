@@ -111,7 +111,7 @@ public class CrawlService {
     //제목,본문 크롤링
     @Async
     public CrawlDto crawlingContent(String url) throws Exception{
-        Document doc = Jsoup.connect(url).get();
+        Document doc = Jsoup.connect(url).timeout(1000000).get();
         String content;
         String title;
         if(url.contains("n.news.naver.com")) {
