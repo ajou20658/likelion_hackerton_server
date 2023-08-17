@@ -102,7 +102,7 @@ public class ServiceController {
             System.out.println("value = " + value);
             try{
                 List<Save> save = crawlService.keyWordCrawling((String)value);
-                System.out.println("save = " + save);
+                System.out.println("saved count : " + save.size());
                 saveRepository.save(MongoSave.builder()
                                 .id((String)value)
                                 .response(save)
