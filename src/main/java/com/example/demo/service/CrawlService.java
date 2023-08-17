@@ -167,7 +167,8 @@ public class CrawlService {
         Elements elements = Jsoup.connect(url)
                 .get().select("#main_pack > section > div > div.group_news > ul > li");
 
-        List<Save> lists = elements.parallelStream().map(e -> {
+        List<Save> lists = new ArrayList<>();
+        for(Element e : elements){
             Elements li = e.select("div.news_wrap.api_ani_send > div > div.news_info > div.info_group");
             if (li.text().contains("네이버뉴스")) {
                 Element secondA = li.select("a").last();
@@ -180,13 +181,13 @@ public class CrawlService {
                 String origin = secondA.attr("href");
                 try {
                     CrawlDto crawlDto = crawlingContent(origin);
-                    return Save.builder()
+                    lists.add(Save.builder()
                             .title(crawlDto.getTitle())
                             .imgUrl(img)
                             .desc(desc)
                             .press(press)
                             .originUrl(origin)
-                            .build();
+                            .build());
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     throw new RuntimeException("Error processing origin: " + origin, ex);
@@ -194,7 +195,7 @@ public class CrawlService {
             } else {
                 return null;
             }
-        }).filter(Objects::nonNull).collect(Collectors.toList());
+        }
 
 
         return lists;
