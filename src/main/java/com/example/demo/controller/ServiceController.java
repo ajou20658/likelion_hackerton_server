@@ -53,12 +53,12 @@ public class ServiceController {
             return -1l;
         }
     }
-    @GetMapping("/ml")
+    @GetMapping("/extract-keyword")
     public void flaskreq(){
         flaskService.iter("0");
     }
 
-    @GetMapping("/keyword")
+    @GetMapping("/get-keyword")
     @ResponseBody
     public ResponseEntity<String> flask(@RequestParam String mode, String sid1){
         LocalDate today = LocalDate.now().minusDays(1);
@@ -177,7 +177,7 @@ public class ServiceController {
     @ResponseBody
     public ResponseEntity<Object> search(@RequestParam String keyword){
         try{
-            List<Save> result = crawlService.keyWordCrawling(keyword);
+            List<Save> result = saveRepository.findById(keyword).get().getResponse();
             Map<String,Object> response = new HashMap<>();
             response.put("response",result);
             return new ResponseEntity<>(response,HttpStatus.OK);
