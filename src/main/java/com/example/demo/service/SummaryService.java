@@ -20,7 +20,7 @@ public class SummaryService {
 
     @Value("${naver.cloud.secret}")
     private String secret;
-    @Async
+
     public Mono<JsonNode> requestAsync(String doc) {
         WebClient webClient = WebClient.builder().baseUrl(url).build();
         final String finalDoc = doc;
