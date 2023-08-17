@@ -111,7 +111,7 @@ public class CrawlService {
     //제목,본문 크롤링
     @Async
     public CrawlDto crawlingContent(String url) throws Exception{
-        Document doc = Jsoup.connect(url).timeout(1000).get();
+        Document doc = Jsoup.connect(url).get();
         String content;
         String title;
         if(url.contains("n.news.naver.com")) {
@@ -172,6 +172,7 @@ public class CrawlService {
             Elements li = e.select("div.news_wrap.api_ani_send > div > div.news_info > div.info_group");
             if (li.text().contains("네이버뉴스")) {
                 Element secondA = li.select("a").last();
+                String title = e.select("div.news_wrap.api_ani_send > div > a").text();
                 String press = li.select("a").first().text();
                 String img = e.select("div.news_wrap.api_ani_send > a > img").attr("data-lazysrc");
                 String desc = e.select("div.news_wrap.api_ani_send > div > div.news_dsc > div > a").text();
@@ -180,9 +181,8 @@ public class CrawlService {
                 }
                 String origin = secondA.attr("href");
                 try {
-                    CrawlDto crawlDto = crawlingContent(origin);
                     lists.add(Save.builder()
-                            .title(crawlDto.getTitle())
+                            .title(title)
                             .imgUrl(img)
                             .desc(desc)
                             .press(press)
