@@ -183,13 +183,10 @@ public class CrawlService {
                 String origin = secondA.attr("href");
                 try {
                     CrawlDto crawlDto = crawlingContent(origin);
-                    Mono<String> res = summaryService.requestAsync(crawlDto.getContent()).map(jsonNode -> jsonNode.get("summary").asText());
-                    String summary = res.block();
                     return Save.builder()
                             .title(crawlDto.getTitle())
                             .imgUrl(img)
                             .desc(desc)
-                            .summary(summary)
                             .press(press)
                             .originUrl(origin)
                             .build();
