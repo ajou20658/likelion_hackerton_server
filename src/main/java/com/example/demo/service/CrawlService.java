@@ -111,8 +111,7 @@ public class CrawlService {
     //제목,본문 크롤링
     @Async
     public CrawlDto crawlingContent(String url) throws Exception{
-        Document doc = Jsoup.connect(url)
-                .timeout(10000).get();
+        Document doc = Jsoup.connect(url).get();
         String content;
         String title;
         if(url.contains("n.news.naver.com")) {
@@ -145,7 +144,6 @@ public class CrawlService {
     //본문 크롤링
     public String crawling(String url) throws Exception{
         Document doc = Jsoup.connect(url)
-                .timeout(10000)
                 .get();
         String content;
         if(url.contains("n.news.naver.com")) {
@@ -167,7 +165,6 @@ public class CrawlService {
     public List<Save> keyWordCrawling(String keyword) throws Exception {
         String url = "https://search.naver.com/search.naver?where=news&query=" + keyword + "&sm=tab_opt&sort=0&photo=0&field=0&pd=0&ds=&de=&docid=&related=0&mynews=0&office_type=0&office_section_code=0&news_office_checked=&nso=so%3Ar%2Cp%3Aall&is_sug_officeid=0";
         Elements elements = Jsoup.connect(url)
-                .timeout(10000)
                 .get().select("#main_pack > section > div > div.group_news > ul > li");
 
         List<Save> lists = elements.parallelStream().map(e -> {
