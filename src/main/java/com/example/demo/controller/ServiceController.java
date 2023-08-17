@@ -81,23 +81,23 @@ public class ServiceController {
         return new ResponseEntity<>(json,HttpStatus.OK);
     }
     @GetMapping("/save-news")//{keyword:[{뉴스1},{뉴스2}]}
-    public void save(){
+    public void save(@RequestParam String sid1){
         LocalDate today = LocalDate.now().minusDays(1);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String formattedDate = today.format(formatter);
         Set<Object> keywords = new HashSet<>();
         //키워드 저장
-        for (int sid1=100;sid1<=105;sid1++){
-            try{
-                Optional<Keywords> exists = keywordsRepository.findById(formattedDate+sid1+"0"+".txt");
-                if(exists.isEmpty()){
-                    return;
-                }
-                keywords.addAll(exists.get().getResponse().values());
-            }catch(Exception ex){
-                ex.printStackTrace();
+
+        try{
+            Optional<Keywords> exists = keywordsRepository.findById(formattedDate+sid1+"0"+".txt");
+            if(exists.isEmpty()){
+                return;
             }
+            keywords.addAll(exists.get().getResponse().values());
+        }catch(Exception ex){
+            ex.printStackTrace();
         }
+
         System.out.println("keywords = " + keywords);
 //        List<Object> TenKeyword = keywords.stream().limit(10).collect(Collectors.toList());
         for(Object value: keywords){
