@@ -155,9 +155,9 @@ public class ServiceController {
                         a.setSummary(summary);
                     }catch (Exception ex){
                         save2.remove(a);
+                        continue;
                     }
                 }
-
                 save.setResponse(save2);
                 saveRepository.save(save);
 
