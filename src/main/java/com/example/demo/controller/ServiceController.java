@@ -125,7 +125,7 @@ public class ServiceController {
         String formattedDate = today.format(formatter);
         Set<Object> keywords = new HashSet<>();
         //키워드 저장
-        for (int sid1=100;sid1<=105;sid1++){
+        for (int sid1=100;sid1<=100;sid1++){
             try{
                 Optional<Keywords> exists = keywordsRepository.findById(formattedDate+sid1+"0"+".txt");
                 if(exists.isEmpty()){
@@ -137,15 +137,19 @@ public class ServiceController {
             }
         }
         System.out.println("keywords = " + keywords);
-        for(Object value: keywords){
+        List<Object> TenKeyword = keywords.stream().limit(10).collect(Collectors.toList());
+        for(Object value: TenKeyword){
             System.out.println("value = " + value);
             try{
                 MongoSave save = saveRepository.findById((String) value).get();
                 List<Save> save2 = save.getResponse();
                 for(Save a:save2){
                     String content = crawlService.crawling(a.getOriginUrl());
-
+                    String summary = String.valueOf(summaryService.requestAsync(content).map(jsonNode -> jsonNode.get("summary").asText()));
+                    a.setSummary(summary);
                 }
+                save.setResponse(save2);
+                saveRepository.save(save);
             }catch (Exception ex){
                 ex.printStackTrace();
             }
