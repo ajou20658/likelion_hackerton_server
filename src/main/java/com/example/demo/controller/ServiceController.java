@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.ArticleDto;
 import com.example.demo.entity.Keywords;
+import com.example.demo.entity.MongoSave;
+import com.example.demo.entity.Save;
 import com.example.demo.repository.KeywordsRepository;
+import com.example.demo.repository.SaveRepository;
 import com.example.demo.service.CrawlService;
 import com.example.demo.service.FlaskService;
 import com.example.demo.service.SummaryService;
@@ -13,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -33,6 +34,8 @@ public class ServiceController {
     private SummaryService summaryService;
     @Autowired
     private KeywordsRepository keywordsRepository;
+    @Autowired
+    private SaveRepository saveRepository;
 
     @GetMapping("/hello")
     @ResponseBody
@@ -57,7 +60,6 @@ public class ServiceController {
     @GetMapping("/keyword")
     @ResponseBody
     public ResponseEntity<String> flask(@RequestParam String mode, String sid1){
-        int i;
         LocalDate today = LocalDate.now().minusDays(1);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String formattedDate = today.format(formatter);
@@ -77,7 +79,39 @@ public class ServiceController {
         }
         return new ResponseEntity<>(json,HttpStatus.OK);
     }
+    @PostMapping("/save")
+    public void save(){
+        LocalDate today = LocalDate.now().minusDays(1);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formattedDate = today.format(formatter);
+        Set<Object> keywords = new HashSet<>();
+        //키워드 저장
+        for (int sid1=100;sid1<=105;sid1++){
+            try{
+                Optional<Keywords> exists = keywordsRepository.findById(formattedDate+sid1+"0"+".txt");
+                if(exists.isEmpty()){
+                    return;
+                }
+                keywords.addAll(exists.get().getResponse().values());
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
+        }
+        for(Object value: keywords){
+            System.out.println("value = " + value);
+            try{
+                saveRepository.save(MongoSave.builder()
+                                .id((String)value)
+                                .response(crawlService.keyWordCrawling((String)value))
+                        .build())
+                ;
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+        //키워드들 조회, 뉴스 검색후 저장
 
+    }
     @GetMapping("/summary")
     @ResponseBody
     public Mono<JsonNode> naver(@RequestParam String url){
@@ -94,7 +128,7 @@ public class ServiceController {
     @ResponseBody
     public ResponseEntity<Object> search(@RequestParam String keyword){
         try{
-            List<ArticleDto> result = crawlService.keyWordCrawling(keyword);
+            List<Save> result = crawlService.keyWordCrawling(keyword);
             Map<String,Object> response = new HashMap<>();
             response.put("response",result);
             return new ResponseEntity<>(response,HttpStatus.OK);

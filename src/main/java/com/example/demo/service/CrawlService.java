@@ -1,16 +1,13 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.ArticleDto;
 import com.example.demo.dto.CrawlDto;
-import com.example.demo.entity.News;
+import com.example.demo.entity.Save;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,11 +15,9 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -36,11 +31,7 @@ public class CrawlService {
     @Autowired
     private SummaryService summaryService;
     private final static int maxlength = 2000;
-    /*
-    필요한 기능
-    1. 일정 시간동안 생성된 기사 크롤링 후 .txt 파일로 저장
-    2. 뉴스에 태그다는
-     */
+    //하루치 기사 제목과 부제목 크롤링
     @Scheduled(cron = "0 0 0 * * *")
     public Long collectingNews() throws Exception {
         Long res = 0L;
@@ -96,7 +87,6 @@ public class CrawlService {
 
         return res;
     }
-
     public void saveToTxtFile(String content, String fileName) {
         try {
             // Resolve the file path within the "static" folder
@@ -118,6 +108,7 @@ public class CrawlService {
             e.printStackTrace();
         }
     }
+    //제목,본문 크롤링
     @Async
     public CrawlDto crawlingContent(String url) throws Exception{
         Document doc = Jsoup.connect(url).get();
@@ -150,6 +141,7 @@ public class CrawlService {
                 .content(content)
                 .build();
     }
+    //본문 크롤링
     public String crawling(String url) throws Exception{
         Document doc = Jsoup.connect(url).get();
         String content;
@@ -168,17 +160,18 @@ public class CrawlService {
         }
         return content;
     }
-    public List<ArticleDto> keyWordCrawling(String keyword) throws Exception {
+    //언론사,출판사,원본링크,제목,이미지url 반환
+    public List<Save> keyWordCrawling(String keyword) throws Exception {
         String url = "https://search.naver.com/search.naver?where=news&query=" + keyword + "&sm=tab_opt&sort=0&photo=0&field=0&pd=0&ds=&de=&docid=&related=0&mynews=0&office_type=0&office_section_code=0&news_office_checked=&nso=so%3Ar%2Cp%3Aall&is_sug_officeid=0";
         Elements elements = Jsoup.connect(url).get().select("#main_pack > section > div > div.group_news > ul > li");
 
-        List<ArticleDto> lists = elements.parallelStream().map(e -> {
+        List<Save> lists = elements.parallelStream().map(e -> {
             Elements li = e.select("div.news_wrap.api_ani_send > div > div.news_info > div.info_group");
             if (li.text().contains("네이버뉴스")) {
                 Element secondA = li.select("a").last();
                 String press = li.select("a").first().text();
                 String img = e.select("div.news_wrap.api_ani_send > a > img").attr("data-lazysrc");
-
+                String desc = e.select("#div.news_wrap.api_ani_send > div > div.news_dsc > div > a").text();
                 if (press.contains("언론사 선정")) {
                     press = press.replace("언론사 선정", "");
                 }
@@ -187,13 +180,22 @@ public class CrawlService {
                     CrawlDto crawlDto = crawlingContent(origin);
                     Mono<String> res = summaryService.requestAsync(crawlDto.getContent()).map(jsonNode -> jsonNode.get("summary").asText());
                     String summary = res.block();
-                    return ArticleDto.builder()
+                    return Save.builder()
+                            .title(crawlDto.getTitle())
+                            .imgUrl(img)
+                            .desc(desc)
                             .summary(summary)
                             .press(press)
-                            .title(crawlDto.getTitle())
-                            .origin(origin)
-                            .img(img)
+                            .originUrl(origin)
                             .build();
+
+//                    return ArticleDto.builder()
+//                            .summary(summary)
+//                            .press(press)
+//                            .title(crawlDto.getTitle())
+//                            .origin(origin)
+//                            .img(img)
+//                            .build();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     return null;
