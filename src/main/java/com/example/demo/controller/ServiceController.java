@@ -99,8 +99,8 @@ public class ServiceController {
             }
         }
         System.out.println("keywords = " + keywords);
-        List<Object> TenKeyword = keywords.stream().limit(10).collect(Collectors.toList());
-        for(Object value: TenKeyword){
+//        List<Object> TenKeyword = keywords.stream().limit(10).collect(Collectors.toList());
+        for(Object value: keywords){
             System.out.println("value = " + value);
             try{
                 List<Save> save = crawlService.keyWordCrawling((String)value);
