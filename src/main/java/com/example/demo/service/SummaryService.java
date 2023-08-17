@@ -24,7 +24,6 @@ public class SummaryService {
         WebClient webClient = WebClient.builder().baseUrl(url).build();
 
         String request = "{\"document\":{\"content\":\"" + doc + "\"},\"option\":{\"language\":\"ko\",\"model\":\"news\",\"summaryCount\":2}}";
-        System.out.println("request = " + request);
         return webClient.post()
                 .uri(url)
                 .header("X-NCP-APIGW-API-KEY-ID", id)

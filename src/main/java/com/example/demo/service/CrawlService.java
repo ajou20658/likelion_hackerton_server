@@ -188,14 +188,6 @@ public class CrawlService {
                             .press(press)
                             .originUrl(origin)
                             .build();
-
-//                    return ArticleDto.builder()
-//                            .summary(summary)
-//                            .press(press)
-//                            .title(crawlDto.getTitle())
-//                            .origin(origin)
-//                            .img(img)
-//                            .build();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     return null;

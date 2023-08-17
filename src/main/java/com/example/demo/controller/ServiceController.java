@@ -79,7 +79,7 @@ public class ServiceController {
         }
         return new ResponseEntity<>(json,HttpStatus.OK);
     }
-    @PostMapping("/save")
+    @GetMapping("/save")
     public void save(){
         LocalDate today = LocalDate.now().minusDays(1);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -118,6 +118,10 @@ public class ServiceController {
         try {
             String content = crawlService.crawling(url);
 //            log.info(content);
+            if(content.isEmpty()){
+                log.info("Empty content = {}" + content,url);
+                return Mono.empty();
+            }
             return summaryService.requestAsync(content);
         }catch (Exception ex){
             ex.printStackTrace();
