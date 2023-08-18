@@ -174,10 +174,8 @@ public class ServiceController {
                         continue;
                     }
                 }
-
                 save.setResponse(updated);
                 saveRepository.save(save);
-
         }
     }
     private int wordCount(String text) {

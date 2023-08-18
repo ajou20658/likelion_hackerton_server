@@ -162,40 +162,43 @@ public class CrawlService {
     }
     //언론사,출판사,원본링크,제목,이미지url 반환
     public List<Save> keyWordCrawling(String keyword) throws Exception {
-        String url = "https://search.naver.com/search.naver?sm=tab_hty.top&where=news&query="+keyword;
-        Document doc = Jsoup.connect(url).get();
-        Elements elements = doc.select("#main_pack > section > div > div.group_news > ul > li");
         List<Save> lists = new ArrayList<>();
-        for(Element e : elements){
-            Elements li = e.select("div.news_wrap.api_ani_send > div > div.news_info > div.info_group");
-            if (li.text().contains("네이버뉴스")) {
-                Element secondA = li.select("a").last();
-                String title = e.select("div.news_wrap.api_ani_send > div > a").text();
-                String press = li.select("a").first().text();
-                String img = e.select("div.news_wrap.api_ani_send > a > img").attr("data-lazysrc");
-                String desc = e.select("div.news_wrap.api_ani_send > div > div.news_dsc > div > a").text();
-                if (press.contains("언론사 선정")) {
-                    press = press.replace("언론사 선정", "");
+        int i=0;
+        while(lists.size()<10){
+            String url = "https://search.naver.com/search.naver?sm=tab_hty.top&where=news&query="+keyword+"&start="+String.valueOf(i*10+1);
+            Document doc = Jsoup.connect(url).get();
+            Elements elements = doc.select("#main_pack > section > div > div.group_news > ul > li");
+
+            for(Element e : elements){
+                Elements li = e.select("div.news_wrap.api_ani_send > div > div.news_info > div.info_group");
+                if (li.text().contains("네이버뉴스")) {
+                    Element secondA = li.select("a").last();
+                    String title = e.select("div.news_wrap.api_ani_send > div > a").text();
+                    String press = li.select("a").first().text();
+                    String img = e.select("div.news_wrap.api_ani_send > a > img").attr("data-lazysrc");
+                    String desc = e.select("div.news_wrap.api_ani_send > div > div.news_dsc > div > a").text();
+                    if (press.contains("언론사 선정")) {
+                        press = press.replace("언론사 선정", "");
+                    }
+                    String origin = secondA.attr("href");
+                    try {
+                        lists.add(Save.builder()
+                                .title(title)
+                                .imgUrl(img)
+                                .desc(desc)
+                                .press(press)
+                                .originUrl(origin)
+                                .build());
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        throw new RuntimeException("Error processing origin: " + origin, ex);
+                    }
+                } else {
+                    continue;
                 }
-                String origin = secondA.attr("href");
-                try {
-                    lists.add(Save.builder()
-                            .title(title)
-                            .imgUrl(img)
-                            .desc(desc)
-                            .press(press)
-                            .originUrl(origin)
-                            .build());
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    throw new RuntimeException("Error processing origin: " + origin, ex);
-                }
-            } else {
-                continue;
             }
+            i++;
         }
-
-
         return lists;
     }
 
