@@ -257,8 +257,8 @@ public class ServiceController {
         }
     }
     @GetMapping("/headline")
-    public ResponseEntity<Object> headline(){
-        List<Save> result = crawlService.Headline();
+    public ResponseEntity<Object> headline(@RequestParam String sid1){
+        List<Save> result = crawlService.Headline(sid1);
         List<Save> updated = new ArrayList<>();
         for(Save a:result){
             try{

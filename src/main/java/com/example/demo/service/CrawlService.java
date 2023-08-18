@@ -202,10 +202,10 @@ public class CrawlService {
         return lists;
     }
 
-    public List<Save> Headline(){
+    public List<Save> Headline(String sid1){
         List<Save> lists = new ArrayList<>();
         try {
-            Document doc = Jsoup.connect("https://news.naver.com/main/main.naver?mode=LSD&mid=shm&sid1=$sid").get();
+            Document doc = Jsoup.connect("https://news.naver.com/main/main.naver?mode=LSD&mid=shm&sid1="+sid1).get();
             Elements elements = doc.select(".sh_item._cluster_content");
             // mobile-padding 클래스의 board-list의 id를 가진 것들을 elements 객체에 저장
             /*
