@@ -57,7 +57,7 @@ public class CrawlService {
                 int pages = 100;
                 String check = "https://news.naver.com/main/list.naver?mode=LS2D&sid2=" + sid2 + "&sid1="+sid1+"&mid=shm&date="+formattedDate+"&page=" + pages;
                 String page_check = Jsoup.connect(check).get().select("#main_content > div.paging > strong").get(0).text();
-                log.info(page_check);
+//                log.info(page_check);
                 pages = Integer.parseInt(page_check);
                 while (pages!=0) {
                     String url = "https://news.naver.com/main/list.naver?mode=LS2D&sid2=" + sid2 + "&sid1="+sid1+"&mid=shm&date="+formattedDate+"&page=" + pages;
@@ -69,7 +69,7 @@ public class CrawlService {
                     }
 
                     for (Element news : element.select("li")) {
-                        log.info(news.text());
+//                        log.info(news.text());
                         res += 1;
                         dataBuilder.append(news.text()).append("\n");
                     }

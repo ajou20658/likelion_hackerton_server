@@ -99,10 +99,10 @@ public class ServiceController {
             ex.printStackTrace();
         }
 
-        System.out.println("keywords = " + keywords);
+//        System.out.println("keywords = " + keywords);
 //        List<Object> TenKeyword = keywords.stream().limit(10).collect(Collectors.toList());
         for(Object value: keywords){
-            System.out.println("value = " + value);
+//            System.out.println("value = " + value);
 
             try{
                 Thread.sleep(1000);
@@ -143,7 +143,7 @@ public class ServiceController {
 //        List<Object> TenKeyword = keywords.stream().limit(10).collect(Collectors.toList());
         System.out.println("TenKeyword = " + keywords);
         for(Object value: keywords){
-            System.out.println("value = " + value);
+//            System.out.println("value = " + value);
                 MongoSave save = saveRepository.findById((String) value).get();
                 List<Save> save2 = save.getResponse();
                 List<Save> updated = new ArrayList<>();
@@ -162,12 +162,12 @@ public class ServiceController {
                         }
                         log.info("OK");
                         if (shouldRemove) {
-                            System.out.println("save2 = " + save2);
+//                            System.out.println("save2 = " + save2);
                             continue;
                         }
                         log.info("OK");
                         String summary = summaryService.requestAsync(content).block().get("summary").asText();
-                        System.out.println("summary = " + summary);
+//                        System.out.println("summary = " + summary);
                         a.setSummary(summary);
                         updated.add(a);
                     }catch (Exception ex){
@@ -208,7 +208,7 @@ public class ServiceController {
             if(repo.isPresent()){
                 System.out.println("hello");
                 List<Save> result = repo.get().getResponse();
-                System.out.println("result = " + result);
+//                System.out.println("result = " + result);
                 Map<String,Object> response = new HashMap<>();
                 response.put("response",result);
                 return new ResponseEntity<>(response,HttpStatus.OK);
@@ -230,12 +230,12 @@ public class ServiceController {
                         }
                         log.info("OK");
                         if (shouldRemove) {
-                            System.out.println("save = " + save);
+//                            System.out.println("save = " + save);
                             continue;
                         }
                         log.info("OK");
                         String summary = summaryService.requestAsync(content).block().get("summary").asText();
-                        System.out.println("summary = " + summary);
+//                        System.out.println("summary = " + summary);
                         a.setSummary(summary);
                         updated.add(a);
                     }catch (Exception ex){
