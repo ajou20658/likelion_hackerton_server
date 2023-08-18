@@ -207,14 +207,55 @@ public class ServiceController {
     public ResponseEntity<Object> search(@RequestParam String keyword){
         try{
             Optional<MongoSave> repo = saveRepository.findById(keyword);
-            List<Save> result = repo.get().getResponse();
-            System.out.println("result = " + result);
-            Map<String,Object> response = new HashMap<>();
-            response.put("response",result);
-            return new ResponseEntity<>(response,HttpStatus.OK);
+            if(repo.isPresent()){
+                List<Save> result = repo.get().getResponse();
+                System.out.println("result = " + result);
+                Map<String,Object> response = new HashMap<>();
+                response.put("response",result);
+                return new ResponseEntity<>(response,HttpStatus.OK);
+            } else {
+                List<Save> save = crawlService.keyWordCrawling(keyword);
+                List<Save> updated = new ArrayList<>();
+                for(Save a:save){
+                    try{
+                        Thread.sleep(100);
+                        String content = crawlService.crawling(a.getOriginUrl());
+                        String[] sentences = content.split("[.!?]");
+                        boolean shouldRemove = false;
+                        log.info("OK");
+                        for (String sentence : sentences) {
+                            if (wordCount(sentence) < 5) {
+                                shouldRemove = true;
+                                break;
+                            }
+                        }
+                        log.info("OK");
+                        if (shouldRemove) {
+                            System.out.println("save = " + save);
+                            continue;
+                        }
+                        log.info("OK");
+                        String summary = summaryService.requestAsync(content).block().get("summary").asText();
+                        System.out.println("summary = " + summary);
+                        a.setSummary(summary);
+                        updated.add(a);
+                    }catch (Exception ex){
+                        continue;
+                    }
+                }
+                saveRepository.save(MongoSave.builder()
+                        .id(keyword)
+                        .response(updated)
+                        .build());
+                Map<String,Object> response = new HashMap<>();
+                response.put("response",updated);
+                return new ResponseEntity<>(response,HttpStatus.OK);
+            }
+
         }catch(Exception ex){
             ex.printStackTrace();
             return null;
         }
     }
+
 }
