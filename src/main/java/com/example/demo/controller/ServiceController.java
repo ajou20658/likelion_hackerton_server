@@ -256,5 +256,40 @@ public class ServiceController {
             return null;
         }
     }
+    @GetMapping("/headline")
+    public ResponseEntity<Object> headline(){
+        List<Save> result = crawlService.Headline();
+        List<Save> updated = new ArrayList<>();
+        for(Save a:result){
+            try{
+                Thread.sleep(50);
+                String content = crawlService.crawling(a.getOriginUrl());
+                String[] sentences = content.split("[.!?]");
+                boolean shouldRemove = false;
+                log.info("OK");
+                for (String sentence : sentences) {
+                    if (wordCount(sentence) < 5) {
+                        shouldRemove = true;
+                        break;
+                    }
+                }
+                log.info("OK");
+                if (shouldRemove) {
+//                            System.out.println("save = " + save);
+                    continue;
+                }
+                log.info("OK");
+                String summary = summaryService.requestAsync(content).block().get("summary").asText();
+//                        System.out.println("summary = " + summary);
+                a.setSummary(summary);
+                updated.add(a);
+            }catch (Exception ex){
+                continue;
+            }
+        }
+        Map<String,Object> response = new HashMap<>();
+        response.put("response",updated);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
 
 }

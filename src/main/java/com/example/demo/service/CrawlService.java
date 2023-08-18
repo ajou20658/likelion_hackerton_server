@@ -202,4 +202,38 @@ public class CrawlService {
         return lists;
     }
 
+    public List<Save> Headline(){
+        List<Save> lists = new ArrayList<>();
+        try {
+            Document doc = Jsoup.connect("https://news.naver.com/main/main.naver?mode=LSD&mid=shm&sid1=$sid").get();
+            Elements elements = doc.select(".sh_item._cluster_content");
+            // mobile-padding 클래스의 board-list의 id를 가진 것들을 elements 객체에 저장
+            /*
+            크롤링 하는 법 : class 는 .(class) 로 찾고 id 는 #(id) 로 검색
+             */
+            for (Element element : elements) {  //elements의 개수만큼 반복
+                String title = elements.select(".sh_text a").first().text();
+                //                Log.d("crawling", title)
+                String cover = elements.select(".sh_thumb_inner a img").attr("src");
+                //                Log.d("crawling", cover)
+                String sum = elements.select(".sh_text_lede").text();
+                //                Log.d("crawling", sum)
+                String press = elements.select(".sh_text_info div").text();
+                //                Log.d("crawling", press)
+                String address = elements.select(".sh_text a").attr("href");
+                //                Log.d("crawling", address)
+                lists.add(Save.builder()
+                        .originUrl(address)
+                        .title(cover)
+                        .title(title)
+                        .desc(sum)
+                        .press(press)
+                        .build());   //위에서 크롤링 한 내용들을 itemlist에 추가
+            }
+            return lists;
+        }catch(Exception ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
 }
