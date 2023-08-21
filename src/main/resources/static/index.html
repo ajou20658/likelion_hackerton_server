@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>How to use</title>
+</head>
+<body>
+    <div>
+        <h1>How to use hackerton api</h1>
+        <div>
+            <h2>crawling api</h2>
+            <ul>
+                <li>/api/crawl</li>
+                <comment>어제 하루동안의 기사 크롤링</comment>
+                <li>/api/save-news?sid1=</li>
+                <comment>100번부터 105번까지 기사 mongodb에 저장</comment>
+                <li></li>
+            </ul>
+        </div>
+        <div>
+            <h2>Flask server</h2>
+            <ul>
+                <li>/api/keyword</li>
+                <comment>저장된 기사 txt파일에 접근하여 키워드 추출후 mongodb에 저장</comment>
+            </ul>
+        </div>
+
+        <h2>etc api</h2>
+        <div>
+            <ul>
+                <li>/api/save-summary?sid1=</li>
+                <comment>mongodb에 저장된 기사의 본문을 크롤링후 naver api사용하여 요약후 mongodb에 저장</comment>
+                <li>/api/summary?url=</li>
+                <comment>url을 넘겨주면 본문을 크롤링하고 naver api를 사용하여 요약후 반환</comment>
+                <li>/api/search?keyword=</li>
+                <comment>keyword를 넘겨주면 해당 키워드에 관련된 기사들을 크롤링후, 본문을 요약하여 db에 저장
+                    s<br>
+                이후 같은 키워드를 검색하면 이전에 저장한 기사를 출력함</comment>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
