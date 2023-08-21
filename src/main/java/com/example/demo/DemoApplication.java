@@ -20,7 +20,6 @@ public class DemoApplication {
 		for(String beanName: beanNames){
 			System.out.println("beanName = " + beanName);
 		}
-		context.close();
 	}
 
 }
