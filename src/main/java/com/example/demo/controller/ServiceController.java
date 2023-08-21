@@ -40,9 +40,8 @@ public class ServiceController {
     private SaveRepository saveRepository;
 
     @GetMapping("/hello")
-    @ResponseBody
     public String hello(){
-        return "hello";
+        return "index";
     }
     @GetMapping("/crawl")
     public Long crawl(){
